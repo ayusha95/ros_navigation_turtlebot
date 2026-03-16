@@ -36,19 +36,22 @@ from launch_ros.actions import Node
 MAP_POSES_DICT = {
     "depot": {"x": -8.00, "y": 0.00, "z": 0.01, "R": 0.00, "P": 0.00, "Y": 0.00},
     "warehouse": {"x": 2.00, "y": -19.65, "z": 0.01, "R": 0.00, "P": 0.00, "Y": 0.00},
+    "house": {"x": -2.268179, "y": 1.380749, "z": 0.01, "R": 0.00, "P": 0.00, "Y": 1.5708},
 }
 
 ROUTE_POSES_DICT = {
     "start": {
         "depot": {"x": 7.5, "y": 7.5, "yaw": 0.00},  # 3rd node
         "warehouse": {"x": 2.00, "y": -19.65, "yaw": 0.00},  # 0th node
+        "house": {"x": -2.268179, "y": 1.380749, "yaw": 0.0},  # near node 0
     },
     "goal": {
         "depot": {"x": 20.12, "y": 11.83, "yaw": 0.00},
         "warehouse": {"x": -13.0, "y": 13.0, "yaw": 0.00},
+        "house": {"x": -0.02421499975025654, "y": 1.7198799848556519, "yaw": 0.0},  # near node 71
     },
 }
-MAP_TYPE = "warehouse"  # Change this to 'warehouse' for warehouse map
+MAP_TYPE = "house"  # Change this to 'warehouse' for warehouse map
 
 
 def generate_launch_description() -> LaunchDescription:

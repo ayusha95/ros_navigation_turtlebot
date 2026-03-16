@@ -2,7 +2,7 @@ version: "3.8"
 
 x-common-env: &common-env
   CYCLONEDDS_URI: >-
-    <CycloneDDS><Domain><Discovery><MaxAutoParticipantIndex>1000</MaxAutoParticipantIndex></Discovery><General><Interfaces><NetworkInterface name="lo" multicast="true"/></Interfaces></General></Domain></CycloneDDS>
+    <CycloneDDS><Domain><Discovery><MaxAutoParticipantIndex>1000</MaxAutoParticipantIndex></Discovery></Domain></CycloneDDS>
   RMW_IMPLEMENTATION: rmw_cyclonedds_cpp
   ROS_DOMAIN_ID: "0"
 
@@ -25,7 +25,11 @@ services:
     ipc: host
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:ro
+      - ./turtlebot4/turtlebot4_navigation/maps/house.yaml:/opt/ros/kilted/share/nav2_bringup/maps/house.yaml:ro
+      - ./turtlebot4/turtlebot4_navigation/maps/house.pgm:/opt/ros/kilted/share/nav2_bringup/maps/house.pgm:ro
       - ./graphs/depot_graph.geojson:/opt/ros/kilted/share/nav2_bringup/graphs/depot_graph.geojson:rw
       - ./graphs/warehouse_graph.geojson:/opt/ros/kilted/share/nav2_bringup/graphs/warehouse_graph.geojson:rw
+      - ./graphs/test_graph.geojson:/opt/ros/kilted/share/nav2_bringup/graphs/test_graph.geojson:rw
+      - ./graphs/house_graph.geojson:/opt/ros/kilted/share/nav2_bringup/graphs/house_graph.geojson:rw
 
-    command: /bin/bash -c 'ros2 launch nav2_rviz_plugins route_tool.launch.py yaml_filename:=/opt/ros/kilted/share/nav2_bringup/maps/warehouse.yaml'
+    command: /bin/bash -c 'ros2 launch nav2_rviz_plugins route_tool.launch.py yaml_filename:=/opt/ros/kilted/share/nav2_bringup/maps/house.yaml'
