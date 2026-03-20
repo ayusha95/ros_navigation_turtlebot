@@ -26,3 +26,18 @@ License
 - See the `LICENSE` file in this repository for license terms.
 
 If you'd like, I can also add badges, a short table of contents, or a local preview command for the docs.
+
+
+Workflow:                                                                                                                               
+  # 1. Start the mapping session                                                                                                          
+  docker compose -f docker-compose-slam.yaml up                                                                                           
+                                                                                                                                          
+  # 2. Teleoperate the robot to explore the house                                                                                         
+  docker exec -it ros2-turtlebot4-slam-kilted ros2 run teleop_twist_keyboard teleop_twist_keyboard  --ros-args -p stamped:=true                                        
+                                                                                                                                          
+  # 3. When the map looks complete in RViz, save it                                                                                       
+  docker exec ros2-turtlebot4-slam-kilted ros2 run nav2_map_server map_saver_cli -f /maps/bot4house                                           
+                                                                                                                                          
+  This saves house.yaml and house.pgm directly into ./turtlebot4/turtlebot4_navigation/maps/. 
+
+

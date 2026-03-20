@@ -36,14 +36,20 @@ services:
       - /dev/shm:/dev/shm
       - ./scripts/route_example_launch.py:/opt/ros/kilted/share/nav2_simple_commander/route_example_launch.py:ro
       - ./turtlebot4_simulator/turtlebot4_gz_bringup/worlds/test.sdf:/opt/ros/kilted/share/nav2_minimal_tb4_sim/worlds/test.sdf:ro
+      - ./turtlebot4_simulator/turtlebot4_gz_bringup/worlds/bot4House.sdf:/opt/ros/kilted/share/nav2_minimal_tb4_sim/worlds/bot4House.sdf:ro
+
       - ./turtlebot4/turtlebot4_navigation/maps/test.yaml:/opt/ros/kilted/share/nav2_bringup/maps/test.yaml:ro
       - ./turtlebot4/turtlebot4_navigation/maps/test.pgm:/opt/ros/kilted/share/nav2_bringup/maps/test.pgm:ro
-      - ./turtlebot4_simulator/turtlebot4_gz_bringup/worlds/house.sdf:/opt/ros/kilted/share/nav2_minimal_tb4_sim/worlds/house.sdf:ro
+
       - ./turtlebot4/turtlebot4_navigation/maps/house.yaml:/opt/ros/kilted/share/nav2_bringup/maps/house.yaml:ro
       - ./turtlebot4/turtlebot4_navigation/maps/house.pgm:/opt/ros/kilted/share/nav2_bringup/maps/house.pgm:ro
 
+      - ./turtlebot4/turtlebot4_navigation/maps/bot4House.yaml:/opt/ros/kilted/share/nav2_bringup/maps/bot4House.yaml:ro
+      - ./turtlebot4/turtlebot4_navigation/maps/bot4House.pgm:/opt/ros/kilted/share/nav2_bringup/maps/bot4House.pgm:ro
+      
       - ./graphs/depot_graph.geojson:/opt/ros/kilted/share/nav2_bringup/graphs/depot_graph.geojson:rw
       - ./graphs/warehouse_graph.geojson:/opt/ros/kilted/share/nav2_bringup/graphs/warehouse_graph.geojson:rw
       - ./graphs/house_graph.geojson:/opt/ros/kilted/share/nav2_bringup/graphs/house_graph.geojson:rw
+      - ./graphs/bot4House_graph.geojson:/opt/ros/kilted/share/nav2_bringup/graphs/bot4House_graph.geojson:rw
 
     command: /bin/bash -c 'ros2 launch nav2_simple_commander route_example_launch.py use_keepout_zones:=False use_speed_zones:=False force_software_rendering:=True'

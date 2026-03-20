@@ -1,0 +1,47 @@
+version: "3.8"
+
+x-common-env: &common-env
+  CYCLONEDDS_URI: >-
+    <CycloneDDS><Domain><Discovery><MaxAutoParticipantIndex>1000</MaxAutoParticipantIndex></Discovery></Domain></CycloneDDS>
+  RMW_IMPLEMENTATION: rmw_cyclonedds_cpp
+  ROS_DOMAIN_ID: "0"
+
+services:
+  turtlebot-gazebo-slam:
+    image: cinoderobotics/turtlebot4_navigation:kilted-amd64-v1.2.0
+    container_name: ros2-turtlebot4-slam-kilted
+    tty: True
+    privileged: true  # needed for Gazebo GUI / hardware access
+    network_mode: "host"
+
+    environment:
+      # <<: *common-env
+      DISPLAY: ${DISPLAY}
+      ROS_DISTRO: kilted
+      QT_X11_NO_MITSHM: "0"
+      QT_QPA_PLATFORM: xcb
+
+      # Gazebo rendering (GPU lidar needs this)
+      GZ_RENDER_ENGINE: ogre
+      GZ_GUI_CONFIG: ""
+      vblank_mode: "0"
+      MESA_LOADER_DRIVER_OVERRIDE: ""
+      LIBGL_DRI3_DISABLE: "1"
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128
+      - /dev/dri/card0:/dev/dri/card0
+    ipc: host
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:ro
+      - /dev/shm:/dev/shm
+      # SLAM mapping launch script
+      - ./scripts/slam_mapping_launch.py:/opt/ros/kilted/share/nav2_simple_commander/slam_mapping_launch.py:ro
+      # bot4House world and map files
+      - ./turtlebot4_simulator/turtlebot4_gz_bringup/worlds/bot4House.sdf:/opt/ros/kilted/share/nav2_minimal_tb4_sim/worlds/bot4House.sdf:ro
+      # Output directory for saving the generated map (writable)
+      - ./turtlebot4/turtlebot4_navigation/maps:/maps:rw
+
+    # Launch simulation + SLAM toolbox for mapping.
+    # Once the map looks good in RViz, save it with:
+    #   docker exec ros2-turtlebot4-slam-kilted ros2 run nav2_map_server map_saver_cli -f /maps/bot4House
+    command: /bin/bash -c 'ros2 launch nav2_simple_commander slam_mapping_launch.py force_software_rendering:=True'
