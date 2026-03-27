@@ -36,7 +36,7 @@ Workflow:
   docker exec -it ros2-turtlebot4-slam-kilted ros2 run teleop_twist_keyboard teleop_twist_keyboard  --ros-args -p stamped:=true                                        
                                                                                                                                           
   # 3. When the map looks complete in RViz, save it                                                                                       
-  docker exec ros2-turtlebot4-slam-kilted ros2 run nav2_map_server map_saver_cli -f /maps/bot4house                                           
+  docker exec ros2-turtlebot4-slam-kilted ros2 run nav2_map_server map_saver_cli -f /maps/bot4House                                           
                                                                                                                                           
   This saves house.yaml and house.pgm directly into ./turtlebot4/turtlebot4_navigation/maps/. 
 

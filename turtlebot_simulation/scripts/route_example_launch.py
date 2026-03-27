@@ -36,22 +36,19 @@ from launch_ros.actions import Node
 MAP_POSES_DICT = {
     "depot": {"x": -8.00, "y": 0.00, "z": 0.01, "R": 0.00, "P": 0.00, "Y": 0.00},
     "warehouse": {"x": 2.00, "y": -19.65, "z": 0.01, "R": 0.00, "P": 0.00, "Y": 0.00},
-    "house": {"x": -2.268179, "y": 1.380749, "z": 0.01, "R": 0.00, "P": 0.00, "Y": 0.0},
-    "bot4House": {"x": -1.09, "y": -1.98, "z": 0.01, "R": 0.00, "P": 0.00, "Y": 0.00},
+    "bot4House": {"x": -4.106990814208984, "y": 3.7303779125213623, "z": 0.01, "R": 0.00, "P": 0.00, "Y": 0.00},
 }
 
 ROUTE_POSES_DICT = {
     "start": {
         "depot": {"x": 7.5, "y": 7.5, "yaw": 0.00},  # 3rd node
         "warehouse": {"x": 2.00, "y": -19.65, "yaw": 0.00},  # 0th node
-        "house": {"x": -2.268179, "y": 1.380749, "yaw": 0.0},  # near node 0
-        "bot4House": {"x": -1.09, "y": -1.98, "yaw": 0.00},  # near node 0
+        "bot4House": {"x": -4.106990814208984, "y": 3.7303779125213623, "yaw": 0.00},  # near node 0
     },
     "goal": {
         "depot": {"x": 20.12, "y": 11.83, "yaw": 0.00},
         "warehouse": {"x": -13.0, "y": 13.0, "yaw": 0.00},
-        "house": {"x": -0.02421499975025654, "y": 1.7198799848556519, "yaw": 0.0},  # near node 71
-        "bot4House": {"x": 3.447377920150757, "y": -1.0863300561904907, "yaw": 0.0},
+        "bot4House": {"x": -2.5524919033050537, "y": 4.215755939483643, "yaw": 0.0},
     },
 }
 MAP_TYPE = "bot4House"  # Change this to 'warehouse' for warehouse map
