@@ -65,6 +65,8 @@ cp turtlebot_simulation/worlds/<your_world>.sdf \
 | `sim.launch.py` | 35 | `default_value='<your_world>'` |
 | `turtlebot4_gz.launch.py` | 31 | `default_value='<your_world>'` |
 
+
+### NOTE: whatever changes made in above three files should not be committed
 ---
 
 ---
@@ -76,6 +78,9 @@ cp turtlebot_simulation/worlds/<your_world>.sdf \
 Run the SLAM stack and teleoperate the robot to build a map:
 
 ```bash
+ ### Go to turtlebot_simulation/docker-compose-slam.yaml : 
+ line 67 - command: /bin/bash -c 'ros2 launch nav2_simple_commander slam_mapping_launch.py world:=```<your_sdf_file_name>``` force_software_rendering:=True'
+ 
 # Start SLAM
 docker compose -f docker-compose-slam.yaml up
 
