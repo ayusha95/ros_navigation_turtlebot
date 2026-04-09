@@ -44,11 +44,32 @@ vcs import < roscon.repos
 docker pull cinoderobotics/turtlebot4_navigation:kilted-amd64-v1.2.0
 ```
 
+### Step 1 — Create a Gazebo World (optional)
+
+If you need a new simulation environment, follow the instructions in `turtlebot_simulation/worlds/template.sdf`.
+
+**1a. Copy the world file to the simulator package:**
+
+```bash
+cp turtlebot_simulation/worlds/<your_world>.sdf \
+   turtlebot_simulation/turtlebot4_simulator/turtlebot4_gz_bringup/worlds/<your_world>.sdf
+```
+
+**1b. Update the default world name in the following launch files** under `turtlebot_simulation/turtlebot4_simulator/turtlebot4_gz_bringup/launch/`:
+
+| File | Line | Change |
+|------|------|--------|
+| `ros_gz_bridge.launch.py` | 38 | `default_value='<your_world>'` |
+| `sim.launch.py` | 35 | `default_value='<your_world>'` |
+| `turtlebot4_gz.launch.py` | 31 | `default_value='<your_world>'` |
+
+---
+
 ---
 
 ## Workflow
 
-### Step 1 — Create a Map (SLAM)
+### Step 2 — Create a Map (SLAM)
 
 Run the SLAM stack and teleoperate the robot to build a map:
 
@@ -69,26 +90,7 @@ docker exec ros2-turtlebot4-slam-kilted \
 This saves `<your_map_name>.yaml` and `<your_map_name>.pgm` into `turtlebot_simulation/turtlebot4/turtlebot4_navigation/maps`.
 
 ---
-### Step 2 — Create a Gazebo World (optional)
 
-If you need a new simulation environment, follow the instructions in `turtlebot_simulation/worlds/template.sdf`.
-
-**2a. Copy the world file to the simulator package:**
-
-```bash
-cp turtlebot_simulation/worlds/<your_world>.sdf \
-   turtlebot_simulation/turtlebot4_simulator/turtlebot4_gz_bringup/worlds/<your_world>.sdf
-```
-
-**2b. Update the default world name in the following launch files** under `turtlebot_simulation/turtlebot4_simulator/turtlebot4_gz_bringup/launch/`:
-
-| File | Line | Change |
-|------|------|--------|
-| `ros_gz_bridge.launch.py` | 38 | `default_value='<your_world>'` |
-| `sim.launch.py` | 35 | `default_value='<your_world>'` |
-| `turtlebot4_gz.launch.py` | 31 | `default_value='<your_world>'` |
-
----
 ### Step 3 — Create a Route Graph
 
 Route graphs define the topology the robot navigates along. They are stored as `.geojson` files in `turtlebot_simulation/graphs/`.
