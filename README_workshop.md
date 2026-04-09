@@ -79,8 +79,11 @@ Run the SLAM stack and teleoperate the robot to build a map:
 
 ```bash
  ### Go to turtlebot_simulation/docker-compose-slam.yaml : 
- line 67 - command: /bin/bash -c 'ros2 launch nav2_simple_commander slam_mapping_launch.py world:=```<your_sdf_file_name>``` force_software_rendering:=True'
+ line 67 - command: /bin/bash -c 'ros2 launch nav2_simple_commander slam_mapping_launch.py world:=```<your_world_name>``` force_software_rendering:=True'
  
+ # Slam mapping
+change Map_type = ```<your_world_name```
+
 # Start SLAM
 docker compose -f docker-compose-slam.yaml up
 
@@ -88,6 +91,12 @@ docker compose -f docker-compose-slam.yaml up
 docker exec -it ros2-turtlebot4-slam-kilted \
   ros2 run teleop_twist_keyboard teleop_twist_keyboard \
   --ros-args -p stamped:=true
+
+if the above command not works then
+ * docker exec -it ros2-turtlebot4-slam-kilted bash
+ * source /opt/ros/kilted/setup.bash
+ * apt update && apt install ros-kilted-teleop-twist-keyboard
+ * ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -p stamped:=true
 
 # Once the map looks complete in RViz, save it
 docker exec ros2-turtlebot4-slam-kilted \
