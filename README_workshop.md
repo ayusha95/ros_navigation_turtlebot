@@ -56,6 +56,7 @@ After creating your own .sdf file, you can check it by running this command ```g
 cp turtlebot_simulation/worlds/<your_world>.sdf \
    turtlebot_simulation/turtlebot4_simulator/turtlebot4_gz_bringup/worlds/<your_world>.sdf
 ```
+### ⚠️ Note: whatever changes made in below three files should not be committed
 
 **1b. Update the default world name in the following launch files** under `turtlebot_simulation/turtlebot4_simulator/turtlebot4_gz_bringup/launch/`:
 
@@ -65,8 +66,6 @@ cp turtlebot_simulation/worlds/<your_world>.sdf \
 | `sim.launch.py` | 35 | `default_value='<your_world>'` |
 | `turtlebot4_gz.launch.py` | 31 | `default_value='<your_world>'` |
 
-
-### NOTE: whatever changes made in above three files should not be committed
 ---
 
 ---
@@ -98,12 +97,15 @@ if the above command not works then
  * apt update && apt install ros-kilted-teleop-twist-keyboard
  * ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -p stamped:=true
 
+### ⚠️ Note: Map name should be in this format
+    ```<your_world_name>.pgm and <your_world_name>.yaml```
+
 # Once the map looks complete in RViz, save it
 docker exec ros2-turtlebot4-slam-kilted \
   ros2 run nav2_map_server map_saver_cli -f /maps/<your_map_name>
 ```
 
-This saves `<your_map_name>.yaml` and `<your_map_name>.pgm` into `turtlebot_simulation/turtlebot4/turtlebot4_navigation/maps`.
+This saves your map files into `turtlebot_simulation/turtlebot4/turtlebot4_navigation/maps`.
 
 ---
 
@@ -114,12 +116,13 @@ Route graphs define the topology the robot navigates along. They are stored as `
 **3a. Load the map in the Route Server Tool:**
 
 Update the map path in `docker-compose-route-server-tool.yaml` to point to your map:
+
+> ⚠️ Make sure the map path is set **before** running the compose file — otherwise an empty folder will be created with the map name.
+
 ```yaml
 command: /bin/bash -c 'ros2 launch nav2_rviz_plugins route_tool.launch.py \
   yaml_filename:=/opt/ros/kilted/share/nav2_bringup/maps/<your_map_name>.yaml'
 ```
-
-> ⚠️ Make sure the map path is set **before** running the compose file — otherwise an empty folder will be created with the map name.
 
 **3b. Launch the Route Server Tool:**
 
@@ -131,11 +134,16 @@ docker compose -f docker-compose-route-server-tool.yaml up -d
 RViz will open with your map. Use the **Route Tool** to:
 1. Add nodes and edges on the map
 2. Use the **Publish Point** tool in RViz to get precise x/y coordinates for node placement
-3. Save the graph to `/opt/ros/kilted/share/nav2_bringup/graphs/<name>_graph.geojson`
+3. Save the graph to `/opt/ros/kilted/share/nav2_bringup/graphs/<your_world_name>_graph.geojson`
 
 The file is automatically synced to `turtlebot_simulation/graphs/`.
 
 ---
+
+ ### Note 
+    Gazebo file name :- __name__.sdf 
+    Map file name :- __name__.pgm and __name__.yaml
+    geojson file name :- __name__ _gragh.geojson
 
 ### Step 4 — Configure Start and Goal Poses
 
