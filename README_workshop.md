@@ -48,6 +48,8 @@ docker pull cinoderobotics/turtlebot4_navigation:kilted-amd64-v1.2.0
 
 If you need a new simulation environment, follow the instructions in `turtlebot_simulation/worlds/template.sdf`.
 
+After creating your own .sdf file, you can check it by running this command ```gz sim <your_world_name>```
+
 **1a. Copy the world file to the simulator package:**
 
 ```bash
