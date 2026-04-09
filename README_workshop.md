@@ -35,7 +35,7 @@ cd turtlebot_simulation/
 vcs import < roscon.repos
 
 # 4. Clone dependencies for navigation
-cd ../turtlebot4_navigation/
+cd ../turtlebot_navigation/
 vcs import < roscon.repos
 
 # 5. Pull the Docker image (optional but recommended)
