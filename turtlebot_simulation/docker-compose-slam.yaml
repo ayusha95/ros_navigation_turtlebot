@@ -36,12 +36,32 @@ services:
       - /dev/shm:/dev/shm
       # SLAM mapping launch script
       - ./scripts/slam_mapping_launch.py:/opt/ros/kilted/share/nav2_simple_commander/slam_mapping_launch.py:ro
-      # bot4House world and map files
-      - ./turtlebot4_simulator/turtlebot4_gz_bringup/worlds/bot4House.sdf:/opt/ros/kilted/share/nav2_minimal_tb4_sim/worlds/bot4House.sdf:ro
+
+      # ALL WORLDS: entire worlds directory is mounted — any .sdf file placed in
+      # turtlebot_simulation/worlds/ is automatically available inside the container.
+      # No manual copying required.
+      - ./worlds:/opt/ros/kilted/share/nav2_minimal_tb4_sim/worlds:ro
+
       # Output directory for saving the generated map (writable)
       - ./turtlebot4/turtlebot4_navigation/maps:/maps:rw
 
-    # Launch simulation + SLAM toolbox for mapping.
-    # Once the map looks good in RViz, save it with:
-    #   docker exec ros2-turtlebot4-slam-kilted ros2 run nav2_map_server map_saver_cli -f /maps/bot4House
-    command: /bin/bash -c 'ros2 launch nav2_simple_commander slam_mapping_launch.py force_software_rendering:=True'
+    # HOW TO CREATE A MAP
+    # -------------------
+    # 1. Place your .sdf file in turtlebot_simulation/worlds/
+    #
+    # 2. Set world:=<your_sdf_filename_without_extension> in the command below.
+    #
+    # 3. Start the SLAM session:
+    #      docker compose -f docker-compose-slam.yaml up
+    #
+    # 4. Drive the robot around in Gazebo to explore the environment.
+    #
+    # 5. Once the map looks good in RViz, save it with:
+    #      docker exec ros2-turtlebot4-slam-kilted \
+    #        ros2 run nav2_map_server map_saver_cli -f /maps/<world_name>
+    #    This generates <world_name>.yaml and <world_name>.pgm inside
+    #    turtlebot_simulation/turtlebot4/turtlebot4_navigation/maps/
+    #
+    # 6. Mount the new map files and update MAP_TYPE in route_example_launch.py
+    #    (follow STEP 5, 6, 7 in turtlebot_simulation/worlds/template.sdf).
+    command: /bin/bash -c 'ros2 launch nav2_simple_commander slam_mapping_launch.py world:=bot4House force_software_rendering:=True'

@@ -1,0 +1,235 @@
+<?xml version='1.0' encoding='ASCII'?>
+
+<sdf version='1.7'>
+
+  <!--
+    ============================================================
+    Gazebo SDF World Template  (SDF 1.7, Gazebo Harmonic)
+    ============================================================
+
+    STEP 1 - Copy and rename this file
+      cp turtlebot_simulation/worlds/template.sdf
+         turtlebot_simulation/worlds/my_world.sdf
+      cp turtlebot_simulation/worlds/my_world.sdf
+         turtlebot_simulation/turtlebot4_simulator/turtlebot4_gz_bringup/worlds/my_world.sdf
+
+    STEP 2 - Set your world name
+      Change the world name attribute below: world name='my_world'
+
+    STEP 3 - Customise the world
+      Keep or remove sections (obstacles, furniture, people, barriers).
+      Adjust every pose: x y z roll pitch yaw
+        x/y/z in metres | roll/pitch/yaw in radians (1.57 rad = 90 deg)
+        x=forward  y=left  z=up
+      Replace the base world include URI with your chosen environment:
+        Warehouse : https://fuel.gazebosim.org/1.0/OpenRobotics/models/Warehouse
+        Hospital  : https://fuel.gazebosim.org/1.0/OpenRobotics/models/Hospital
+        Office    : https://fuel.gazebosim.org/1.0/OpenRobotics/models/Office
+
+    STEP 4 - Mount the world file in docker-compose-route-server.yaml
+      Under turtlebot-gazebo volumes add:
+        ./turtlebot4_simulator/turtlebot4_gz_bringup/worlds/my_world.sdf:
+        /opt/ros/kilted/share/nav2_minimal_tb4_sim/worlds/my_world.sdf:ro
+
+    STEP 5 - Mount your map files in docker-compose-route-server.yaml
+      Under turtlebot-gazebo volumes add:
+        ./turtlebot4/turtlebot4_navigation/maps/my_world.yaml:
+        /opt/ros/kilted/share/nav2_bringup/maps/my_world.yaml:ro
+        ./turtlebot4/turtlebot4_navigation/maps/my_world.pgm:
+        /opt/ros/kilted/share/nav2_bringup/maps/my_world.pgm:ro
+
+    STEP 6 - Mount your graph file in docker-compose-route-server.yaml
+      Under turtlebot-gazebo volumes add:
+        ./graphs/my_world_graph.geojson:
+        /opt/ros/kilted/share/nav2_bringup/graphs/my_world_graph.geojson:rw
+
+    STEP 7 - Update the launch script
+      Open turtlebot_simulation/scripts/route_example_launch.py
+      Add map poses, start pose, and goal coordinates for your world
+      following the existing "house" or "test" examples.
+      Set MAP_TYPE = "my_world" at the top of that file.
+
+    STEP 8 - Launch the simulation
+      cd turtlebot_simulation
+      docker compose -f docker-compose-route-server.yaml up
+
+      Command run inside the container:
+        ros2 launch nav2_simple_commander route_example_launch.py
+          use_keepout_zones:=False
+          use_speed_zones:=False
+          force_software_rendering:=True
+    ============================================================
+  -->
+
+  <world name='my_world'>
+
+    <!-- PHYSICS: controls simulation accuracy vs. performance.
+         Lower max_step_size = more accurate but slower.
+         real_time_factor: 1.0 = real time, less than 1.0 = slower. -->
+    <physics type="ode">
+      <max_step_size>0.003</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <!-- PLUGINS: required system plugins for Gazebo Harmonic. -->
+    <plugin name="gz::sim::systems::Physics"          filename="gz-sim-physics-system" />
+    <plugin name="gz::sim::systems::UserCommands"     filename="gz-sim-user-commands-system" />
+    <plugin name="gz::sim::systems::SceneBroadcaster" filename="gz-sim-scene-broadcaster-system" />
+    <plugin name="gz::sim::systems::Contact"          filename="gz-sim-contact-system" />
+
+    <!-- SENSORS PLUGIN: needed for cameras and lidars. Remove if not using sensors. -->
+    <plugin name="gz::sim::systems::Sensors" filename="gz-sim-sensors-system">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+
+    <!-- SCENE: ambient light colour, sky colour, shadows, grid. -->
+    <scene>
+      <ambient>1 1 1 1</ambient>
+      <background>0.3 0.7 0.9 1</background>
+      <shadows>0</shadows>
+      <grid>false</grid>
+    </scene>
+
+    <!-- LIGHTING: directional sun light.
+         Keep cast_shadows 0 when spawning multiple robots to avoid crashes. -->
+    <light type="directional" name="sun">
+      <cast_shadows>0</cast_shadows>
+      <pose>-5 -3 10 0 0 0</pose>
+      <diffuse>1 1 1 1</diffuse>
+      <specular>1 1 1 1</specular>
+      <direction>0 0 -1</direction>
+    </light>
+
+    <!-- GROUND PLANE: flat floor. Remove if your base world already includes one. -->
+    <model name='ground_plane'>
+      <static>true</static>
+      <pose>0 0 0 0 0 0</pose>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <plane>
+              <normal>0.0 0.0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+
+    <!-- BASE WORLD: pre-built environment from Gazebo Fuel.
+         Replace the URI with your chosen environment (see STEP 3 above).
+         Offset z by -0.1 to sit flush on the ground plane. -->
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Warehouse</uri>
+      <name>base_world</name>
+      <pose>0 0 -0.1 0 0 0</pose>
+    </include>
+
+    <!-- BOX OBSTACLE: inline geometry, no Fuel download needed.
+         Duplicate this block to add more boxes or walls.
+         size: width(x) depth(y) height(z) in metres. -->
+    <model name='box_obstacle_0'>
+      <static>true</static>
+      <pose>2.0 0.0 0.5 0 0 0</pose>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <box><size>0.2 1.5 1.0</size></box>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <box><size>0.2 1.5 1.0</size></box>
+          </geometry>
+          <material>
+            <ambient>0.6 0.3 0.1 1</ambient>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- CYLINDER PILLAR: duplicate to add more pillars. -->
+    <model name='pillar_0'>
+      <static>true</static>
+      <pose>-3.0 1.0 0.75 0 0 0</pose>
+      <link name='link'>
+        <collision name='collision'>
+          <geometry>
+            <cylinder><radius>0.2</radius><length>1.5</length></cylinder>
+          </geometry>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <cylinder><radius>0.2</radius><length>1.5</length></cylinder>
+          </geometry>
+          <material><ambient>0.4 0.4 0.4 1</ambient></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- SHELVES: useful for warehouse and office worlds. -->
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/MovAi/models/shelf_big</uri>
+      <name>shelf_0</name>
+      <pose>-8.5 -13 0 0 0 0</pose>
+    </include>
+
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/MovAi/models/shelf</uri>
+      <name>shelf_1</name>
+      <pose>0.4 -2 0 0 0 0</pose>
+    </include>
+
+    <!-- COFFEE TABLE -->
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/CoffeeTable</uri>
+      <name>table_0</name>
+      <pose>-12.7 6.5 0 0 0 0</pose>
+    </include>
+
+    <!-- CHAIRS -->
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Chair</uri>
+      <name>chair_0</name>
+      <pose>14.3 -5.5 0 0 0 3.0</pose>
+    </include>
+
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/foldable_chair</uri>
+      <name>foldable_chair_0</name>
+      <pose>-11.5 6.4 0 0 0 -1.8</pose>
+    </include>
+
+    <!-- BARRIERS: good for creating corridors and restricted zones. -->
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Jersey Barrier</uri>
+      <name>barrier_0</name>
+      <pose>-10.4 14.75 0 0 0 1.57</pose>
+    </include>
+
+    <!-- PEOPLE: static human models for social navigation scenarios. -->
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/FemaleVisitorSit</uri>
+      <name>person_sitting_0</name>
+      <pose>14.3 -4 0 0 0 -1.43</pose>
+    </include>
+
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/MaleVisitorOnPhone</uri>
+      <name>person_standing_0</name>
+      <pose>1 -1 0 0 0 1.57</pose>
+    </include>
+
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/plateau/models/Casual female</uri>
+      <name>person_walking_0</name>
+      <pose>-12 15 0 0 0 0</pose>
+    </include>
+
+    <!-- ROBOT SPAWN POINT (reference only):
+         The actual spawn is handled by the launch file, not this SDF.
+         Default TurtleBot4 spawn: pose 0 0 0 0 0 0
+         Update route_example_launch.py to match your chosen spawn. -->
+
+  </world>
+</sdf>
