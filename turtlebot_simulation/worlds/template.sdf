@@ -28,7 +28,7 @@
     ============================================================
   -->
 
-  <world name='my_world'>
+  <world name='my_world'> ## Set your world name here (must match the filename, e.g. my_world.sdf) ##
 
     <!-- PHYSICS: controls simulation accuracy vs. performance.
          Lower max_step_size = more accurate but slower.
