@@ -31,10 +31,11 @@ services:
       - ./turtlebot4/turtlebot4_navigation/maps/bot4House.yaml:/opt/ros/kilted/share/nav2_bringup/maps/bot4House.yaml:ro
       - ./turtlebot4/turtlebot4_navigation/maps/bot4House.pgm:/opt/ros/kilted/share/nav2_bringup/maps/bot4House.pgm:ro
 
-      - ./graphs/depot_graph.geojson:/opt/ros/kilted/share/nav2_bringup/graphs/depot_graph.geojson:rw
-      - ./graphs/warehouse_graph.geojson:/opt/ros/kilted/share/nav2_bringup/graphs/warehouse_graph.geojson:rw
-      - ./graphs/test_graph.geojson:/opt/ros/kilted/share/nav2_bringup/graphs/test_graph.geojson:rw
-      - ./graphs/house_graph.geojson:/opt/ros/kilted/share/nav2_bringup/graphs/house_graph.geojson:rw
-      - ./graphs/bot4House_graph.geojson:/opt/ros/kilted/share/nav2_bringup/graphs/bot4House_graph.geojson:rw
+      # - ./graphs/depot_graph.geojson:/opt/ros/kilted/share/nav2_bringup/graphs/depot_graph.geojson:rw
+      # - ./graphs/warehouse_graph.geojson:/opt/ros/kilted/share/nav2_bringup/graphs/warehouse_graph.geojson:rw
+      # - ./graphs/test_graph.geojson:/opt/ros/kilted/share/nav2_bringup/graphs/test_graph.geojson:rw
+      # - ./graphs/house_graph.geojson:/opt/ros/kilted/share/nav2_bringup/graphs/house_graph.geojson:rw
+      # - ./graphs/bot4House_graph.geojson:/opt/ros/kilted/share/nav2_bringup/graphs/bot4House_graph.geojson:rw
+      - ./graphs:/opt/ros/kilted/share/nav2_bringup/graphs:rw
 
     command: /bin/bash -c 'ros2 launch nav2_rviz_plugins route_tool.launch.py yaml_filename:=/opt/ros/kilted/share/nav2_bringup/maps/bot4House.yaml'
