@@ -34,6 +34,8 @@ services:
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:ro
       - /dev/shm:/dev/shm
+      # Rviz configuration file
+      - ./rviz_config:/rviz_config:rw
       # SLAM mapping launch script
       - ./scripts/slam_mapping_launch.py:/opt/ros/kilted/share/nav2_simple_commander/slam_mapping_launch.py:ro
 
