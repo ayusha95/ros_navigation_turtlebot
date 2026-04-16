@@ -1,0 +1,66 @@
+{
+    "crs": {
+        "properties": {
+            "name": "urn:ogc:def:crs:EPSG::3857"
+        },
+        "type": "name"
+    },
+    "features": [
+        {
+            "geometry": {
+                "coordinates": [
+                    -2.268178939819336,
+                    1.380748987197876
+                ],
+                "type": "Point"
+            },
+            "properties": {
+                "frame": "map",
+                "id": 0
+            },
+            "type": "Feature"
+        },
+        {
+            "geometry": {
+                "coordinates": [
+                    -0.02421499975025654,
+                    1.7198799848556519
+                ],
+                "type": "Point"
+            },
+            "properties": {
+                "frame": "map",
+                "id": 1
+            },
+            "type": "Feature"
+        },
+        {
+            "geometry": {
+                "type": "MultiLineString"
+            },
+            "properties": {
+                "cost": 0.0,
+                "endid": 1,
+                "id": 2,
+                "overridable": true,
+                "startid": 0
+            },
+            "type": "Feature"
+        },
+        {
+            "geometry": {
+                "type": "MultiLineString"
+            },
+            "properties": {
+                "cost": 0.0,
+                "endid": 0,
+                "id": 3,
+                "overridable": true,
+                "startid": 1
+            },
+            "type": "Feature"
+        }
+    ],
+    "name": "house_graph",
+    "type": "FeatureCollection"
+}

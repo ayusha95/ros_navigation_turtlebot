@@ -36,19 +36,22 @@ from launch_ros.actions import Node
 MAP_POSES_DICT = {
     "depot": {"x": -8.00, "y": 0.00, "z": 0.01, "R": 0.00, "P": 0.00, "Y": 0.00},
     "warehouse": {"x": 2.00, "y": -19.65, "z": 0.01, "R": 0.00, "P": 0.00, "Y": 0.00},
+    "bot4House": {"x": -4.106990814208984, "y": 3.7303779125213623, "z": 0.01, "R": 0.00, "P": 0.00, "Y": 0.00},
 }
 
 ROUTE_POSES_DICT = {
     "start": {
         "depot": {"x": 7.5, "y": 7.5, "yaw": 0.00},  # 3rd node
         "warehouse": {"x": 2.00, "y": -19.65, "yaw": 0.00},  # 0th node
+        "bot4House": {"x": -4.106990814208984, "y": 3.7303779125213623, "yaw": 0.00},  # near node 0
     },
     "goal": {
         "depot": {"x": 20.12, "y": 11.83, "yaw": 0.00},
         "warehouse": {"x": -13.0, "y": 13.0, "yaw": 0.00},
+        "bot4House": {"x": -2.5524919033050537, "y": 4.215755939483643, "yaw": 0.0},
     },
 }
-MAP_TYPE = "warehouse"  # Change this to 'warehouse' for warehouse map
+MAP_TYPE = "bot4House"  # Change this to 'warehouse' for warehouse map
 
 
 def generate_launch_description() -> LaunchDescription:
@@ -62,7 +65,6 @@ def generate_launch_description() -> LaunchDescription:
     graph_filepath = os.path.join(
         nav2_bringup_dir, "graphs", f"{MAP_TYPE}_graph.geojson"
     )
-
     # Launch configuration variables
     headless = LaunchConfiguration("headless")
     use_keepout_zones = LaunchConfiguration("use_keepout_zones")
@@ -176,6 +178,7 @@ def generate_launch_description() -> LaunchDescription:
         launch_arguments=[
             ("map", map_yaml_file),
             ("graph", graph_filepath),
+            ("use_sim_time", "True"),
             ("use_keepout_zones", use_keepout_zones),
             ("use_speed_zones", use_speed_zones),
             ("keepout_mask", keepout_mask_yaml_file),

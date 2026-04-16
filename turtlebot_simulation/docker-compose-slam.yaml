@@ -1,0 +1,69 @@
+version: "3.8"
+
+x-common-env: &common-env
+  CYCLONEDDS_URI: >-
+    <CycloneDDS><Domain><Discovery><MaxAutoParticipantIndex>1000</MaxAutoParticipantIndex></Discovery></Domain></CycloneDDS>
+  RMW_IMPLEMENTATION: rmw_cyclonedds_cpp
+  ROS_DOMAIN_ID: "0"
+
+services:
+  turtlebot-gazebo-slam:
+    image: cinoderobotics/turtlebot4_navigation:kilted-amd64-v1.2.0
+    container_name: ros2-turtlebot4-slam-kilted
+    tty: True
+    privileged: true  # needed for Gazebo GUI / hardware access
+    network_mode: "host"
+
+    environment:
+      # <<: *common-env
+      DISPLAY: ${DISPLAY}
+      ROS_DISTRO: kilted
+      QT_X11_NO_MITSHM: "0"
+      QT_QPA_PLATFORM: xcb
+
+      # Gazebo rendering (GPU lidar needs this)
+      GZ_RENDER_ENGINE: ogre
+      GZ_GUI_CONFIG: ""
+      vblank_mode: "0"
+      MESA_LOADER_DRIVER_OVERRIDE: ""
+      LIBGL_DRI3_DISABLE: "1"
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128
+      - /dev/dri/card0:/dev/dri/card0
+    ipc: host
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:ro
+      - /dev/shm:/dev/shm
+      # Rviz configuration file
+      - ./rviz_config:/rviz_config:rw
+      # SLAM mapping launch script
+      - ./scripts/slam_mapping_launch.py:/opt/ros/kilted/share/nav2_simple_commander/slam_mapping_launch.py:ro
+
+      # ALL WORLDS: entire worlds directory is mounted — any .sdf file placed in
+      # turtlebot_simulation/worlds/ is automatically available inside the container.
+      # No manual copying required.
+      - ./worlds:/opt/ros/kilted/share/nav2_minimal_tb4_sim/worlds:ro
+
+      # Output directory for saving the generated map (writable)
+      - ./turtlebot4/turtlebot4_navigation/maps:/maps:rw
+
+    # HOW TO CREATE A MAP
+    # -------------------
+    # 1. Place your .sdf file in turtlebot_simulation/worlds/
+    #
+    # 2. Set world:=<your_sdf_filename_without_extension> in the command below.
+    #
+    # 3. Start the SLAM session:
+    #      docker compose -f docker-compose-slam.yaml up
+    #
+    # 4. Drive the robot around in Gazebo to explore the environment.
+    #
+    # 5. Once the map looks good in RViz, save it with:
+    #      docker exec ros2-turtlebot4-slam-kilted \
+    #        ros2 run nav2_map_server map_saver_cli -f /maps/<world_name>
+    #    This generates <world_name>.yaml and <world_name>.pgm inside
+    #    turtlebot_simulation/turtlebot4/turtlebot4_navigation/maps/
+    #
+    # 6. Mount the new map files and update MAP_TYPE in route_example_launch.py
+    #    (follow STEP 5, 6, 7 in turtlebot_simulation/worlds/template.sdf).
+    command: /bin/bash -c 'ros2 launch nav2_simple_commander slam_mapping_launch.py world:=bot4House force_software_rendering:=True'

@@ -2,7 +2,7 @@ version: "3.8"
 
 x-common-env: &common-env
   CYCLONEDDS_URI: >-
-    <CycloneDDS><Domain><Discovery><MaxAutoParticipantIndex>1000</MaxAutoParticipantIndex></Discovery><General><Interfaces><NetworkInterface name="lo" multicast="true"/></Interfaces></General></Domain></CycloneDDS>
+    <CycloneDDS><Domain><Discovery><MaxAutoParticipantIndex>1000</MaxAutoParticipantIndex></Discovery></Domain></CycloneDDS>
   RMW_IMPLEMENTATION: rmw_cyclonedds_cpp
   ROS_DOMAIN_ID: "0"
 
@@ -12,6 +12,7 @@ services:
     container_name: ros2-turtlebot4-gazebo-kilted
     tty: True
     privileged: true  # needed for Gazebo GUI / hardware access
+    network_mode: "host"
 
     environment:
       <<: *common-env
@@ -34,7 +35,25 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix:ro
       - /dev/shm:/dev/shm
       - ./scripts/route_example_launch.py:/opt/ros/kilted/share/nav2_simple_commander/route_example_launch.py:ro
-      - ./graphs/depot_graph.geojson:/opt/ros/kilted/share/nav2_bringup/graphs/depot_graph.geojson:rw
-      - ./graphs/warehouse_graph.geojson:/opt/ros/kilted/share/nav2_bringup/graphs/warehouse_graph.geojson:rw
+      # ALL WORLDS: entire worlds directory is mounted — any .sdf file placed in
+      # turtlebot_simulation/worlds/ is automatically available inside the container.
+      - ./worlds:/opt/ros/kilted/share/nav2_minimal_tb4_sim/worlds:ro
+      - ./worlds:/opt/ros/kilted/share/turtlebot4_gz_bringup/worlds:ro
 
-    command: /bin/bash -c 'ros2 launch nav2_simple_commander route_example_launch.py'
+      - ./turtlebot4/turtlebot4_navigation/maps/test.yaml:/opt/ros/kilted/share/nav2_bringup/maps/test.yaml:ro
+      - ./turtlebot4/turtlebot4_navigation/maps/test.pgm:/opt/ros/kilted/share/nav2_bringup/maps/test.pgm:ro
+
+      - ./turtlebot4/turtlebot4_navigation/maps/house.yaml:/opt/ros/kilted/share/nav2_bringup/maps/house.yaml:ro
+      - ./turtlebot4/turtlebot4_navigation/maps/house.pgm:/opt/ros/kilted/share/nav2_bringup/maps/house.pgm:ro
+
+      - ./turtlebot4/turtlebot4_navigation/maps/bot4House.yaml:/opt/ros/kilted/share/nav2_bringup/maps/bot4House.yaml:ro
+      - ./turtlebot4/turtlebot4_navigation/maps/bot4House.pgm:/opt/ros/kilted/share/nav2_bringup/maps/bot4House.pgm:ro
+      
+      # - ./graphs/depot_graph.geojson:/opt/ros/kilted/share/nav2_bringup/graphs/depot_graph.geojson:rw
+      # - ./graphs/warehouse_graph.geojson:/opt/ros/kilted/share/nav2_bringup/graphs/warehouse_graph.geojson:rw
+      # - ./graphs/house_graph.geojson:/opt/ros/kilted/share/nav2_bringup/graphs/house_graph.geojson:rw
+      # - ./graphs/bot4House_graph.geojson:/opt/ros/kilted/share/nav2_bringup/graphs/bot4House_graph.geojson:rw
+      - ./graphs:/opt/ros/kilted/share/nav2_bringup/graphs:rw
+      - ../configs/nav2.yaml:/opt/ros/kilted/share/nav2_bringup/params/nav2_params.yaml:ro
+
+    command: /bin/bash -c 'ros2 launch nav2_simple_commander route_example_launch.py use_keepout_zones:=False use_speed_zones:=False force_software_rendering:=True'
